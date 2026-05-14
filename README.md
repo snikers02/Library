@@ -1,4 +1,5 @@
 # Library Project (Lab 5)
+![CI Pipeline](https://github.com/snikers02/Library/actions/workflows/ci.yml/badge.svg)
 
 ## Мета
 Проєкт демонструє реалізацію базової бізнес-логіки бібліотеки з архітектурою **Controller–Service–Repository** та покриттям юніт-тестами.

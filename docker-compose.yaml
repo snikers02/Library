@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  # Сервіс бази даних
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: library_db
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+      MYSQL_ROOT_PASSWORD: rootpassword
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Основний сервіс додатка
+  app:
+    build: .
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=library_db
+      - DB_USER=user
+      - DB_PASSWORD=password
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # Окремий сервіс для запуску тестів
+  tests:
+    build: .
+    environment:
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_NAME=library_db
+      - DB_USER=user
+      - DB_PASSWORD=password
+    depends_on:
+      db:
+        condition: service_healthy
+    command: python -m pytest
